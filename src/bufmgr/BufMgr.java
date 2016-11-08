@@ -24,6 +24,7 @@ import java.util.HashMap;
  */
 public class BufMgr implements GlobalConst {
 
+  protected FrameDesc[] frametab;
 
   /**
    * Constructs a buffer manager by initializing member data.  
@@ -32,7 +33,7 @@ public class BufMgr implements GlobalConst {
    */
   public BufMgr(int numframes) {
 
-    throw new UnsupportedOperationException("Not implemented");
+    frametab = new FrameDesc[numframes];
 
   } // public BufMgr(int numframes)
 
@@ -120,10 +121,25 @@ public class BufMgr implements GlobalConst {
    * 
    */
   public void flushAllFrames() {
+    //TODO flushAllPages() is called from elsewhere in the code but not this function.
+    //I added in flushAllPages for the code to compile.
+    //I'm wondering if this function is just a typo -John
 
     throw new UnsupportedOperationException("Not implemented");
 
   } // public void flushAllFrames()
+
+  /**
+   * Write all valid and dirty frames to disk.
+   * Note flushing involves only writing, not unpinning or freeing
+   * or the like.
+   * 
+   */
+  public void flushAllPages() {
+
+    throw new UnsupportedOperationException("Not implemented");
+
+  } // public void flushAllPages()
 
   /**
    * Write a page in the buffer pool to disk, if dirty.
@@ -147,6 +163,13 @@ public class BufMgr implements GlobalConst {
    * Gets the total number of unpinned buffer frames.
    */
   public int getNumUnpinned() {
+    throw new UnsupportedOperationException("Not implemented");
+  }
+
+  /**
+  * Gets the total number of buffer frames.
+  */
+  public int getNumBuffers() {
     throw new UnsupportedOperationException("Not implemented");
   }
 
