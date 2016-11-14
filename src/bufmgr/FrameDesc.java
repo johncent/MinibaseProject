@@ -50,9 +50,10 @@ public class FrameDesc implements GlobalConst {
     }
 
   /**
-  * Gets dirtyBit field
+  * Gets dirtyBit field.
+  * @return True if dirty, false if not
   */
-    public boolean getDirtyBit()
+    public boolean isDirty()
     {
       return dirtyBit;
     }

@@ -47,20 +47,20 @@ public class Clock extends Replacer {
    */
   public int pickVictim() {
 
-    for(int counter = 0; counter < frametab.length*2; counter++)
+    for(int counter = 0; counter < frametable.length*2; counter++)
     {
-      if(frametab[current].getValidDataIndicator() == false)
+      if(frametable[current].getValidDataIndicator() == false)
         return current; //frame doesn't have valid data, use it
 
-      if(frametab[current].getPinCount() == 0)
+      if(frametable[current].getPinCount() == 0)
       {
-        if(frametab[current].getRefBit() == true)
-          frametab[current].clearRefBit();
+        if(frametable[current].getRefBit() == true)
+          frametable[current].setRefBit(false);
         else
           return current; //not referenced recently, use it
       }
 
-      current = (current + 1) % frametab.length;
+      current = (current + 1) % frametable.length;
 
     }
   	

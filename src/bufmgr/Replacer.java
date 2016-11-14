@@ -8,7 +8,7 @@ import global.GlobalConst;
 abstract class Replacer implements GlobalConst {
 
   /** Reference back to the buffer manager's frame table. */
-  protected FrameDesc[] frametab;
+  protected FrameDesc[] frametable;
 
   // --------------------------------------------------------------------------
 
@@ -16,7 +16,7 @@ abstract class Replacer implements GlobalConst {
    * Constructs the replacer, given the buffer manager.
    */
   protected Replacer(BufMgr bufmgr) {
-    this.frametab = bufmgr.frametab;
+    this.frametable = bufmgr.frametable;
   }
 
   /**
