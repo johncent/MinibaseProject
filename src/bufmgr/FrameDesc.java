@@ -13,142 +13,136 @@ import global.GlobalConst;
  */
 public class FrameDesc implements GlobalConst {
 
-	private boolean dirtyBit; //true = frame is dirty
-	private boolean validData; //true = frame contains valid data
-	private int diskPageNum;
-	private int pinCount;
-	private boolean refBit; //true = page recently referenced
+  private boolean dirtyBit; //true = frame is dirty
+  private boolean validData; //true = frame contains valid data
+  private int diskPageNum;
+  private int pinCount;
+  private boolean refBit; //true = page recently referenced
 
 
-	/**
-	* Constructor for FrameDesc class
-	*/
-	public FrameDesc(){
+  /**
+  * Constructor for FrameDesc class
+  */
+  public FrameDesc(){
 
-		dirtyBit = false;
-		validData = false;
-		diskPageNum = INVALID_PAGEID;
-		pinCount = 0;
-		refBit = false;
-  	}
+    dirtyBit = false;
+    validData = false;
+    diskPageNum = INVALID_PAGEID;
+    pinCount = 0;
+    refBit = false;
+    }
 
-	/**
-	* Sets dirtyBit field to true
-	*/
-  	public void setDirtyBit()
-  	{
-  		dirtyBit = true;
-  	}
+  /**
+  * Sets dirtyBit field 
+  * @param dirty True/False value to set dirtyBit to
+  */
+    public void setDirtyBit(boolean dirty)
+    {
+      dirtyBit = dirty;
+    }
 
-	/**
-	* Sets dirtyBit field to false
-	*/
-  	public void clearDirtyBit()
-  	{
-  		dirtyBit = false;
-  	}
+  /**
+  * Sets dirtyBit field to false
+  */
+    public void clearDirtyBit()
+    {
+      dirtyBit = false;
+    }
 
-	/**
-	* Gets dirtyBit field
-	*/
-  	public boolean getDirtyBit()
-  	{
-  		return dirtyBit;
-  	}
+  /**
+  * Gets dirtyBit field
+  */
+    public boolean getDirtyBit()
+    {
+      return dirtyBit;
+    }
 
-	/**
-	* Sets validData field to true. This frame has data which reflects
-	* data in a disk page.
-	*/
-  	public void setValidDataIndicator()
-  	{
-  		validData = true;
-  	}
+  /**
+  * Sets validData field 
+  * @param bool True/False value to set validData to
+  */
+    public void setValidDataIndicator(boolean bool)
+    {
+      validData = bool;
+    }
 
-	/**
-	* Sets validData field to false. This frame does not have
-	* data which reflects data in a disk page.
-	*/
-  	public void clearValidDataIndicator()
-  	{
-  		validData = false;
-  	}
+  /**
+  * Sets validData field to false. This frame does not have
+  * data which reflects data in a disk page.
+  */
+    public void clearValidDataIndicator()
+    {
+      validData = false;
+    }
 
-	/**
-	* Gets validData field
-	*/
-  	public boolean getValidDataIndicator()
-  	{
-  		return validData;
-  	}
+  /**
+  * Gets validData field
+  */
+    public boolean getValidDataIndicator()
+    {
+      return validData;
+    }
 
-	/**
-	* Sets diskPageNum to supplied value
-	* @param num Page number of the page occupying this frame
-	*/
-  	public void setDiskPageNum(int num)
-  	{
-  		diskPageNum = num;
-  	}
+  /**
+  * Sets diskPageNum to supplied value
+  * @param num Page number of the page occupying this frame
+  */
+    public void setDiskPageNum(int num)
+    {
+      diskPageNum = num;
+    }
 
-	/**
-	* Gets disk page number of page occupying this frame
-	*/
-  	public int getDiskPageNum()
-  	{
-  		return diskPageNum;
-  	}
+  /**
+  * Gets disk page number of page occupying this frame
+  */
+    public int getDiskPageNum()
+    {
+      return diskPageNum;
+    }
 
-  	/**
-	* Increment the pin count on this frame's page
-	*/
-  	public void incrementPinCount()
-  	{
-  		pinCount++;
-  	}
+    /**
+  * Increment the pin count on this frame's page
+  */
+    public void incrementPinCount()
+    {
+      pinCount++;
+    }
 
-	/**
-	* Decrement the pin count on this frame's page
-	* If it is already 0, do nothing
-	*/
-  	public void decrementPinCount()
-  	{
-  		if(pinCount > 0)
-  		{
-  			pinCount--;
-  		}
-  	}
+  /**
+  * Decrement the pin count on this frame's page
+  * If it is already 0, do nothing
+  */
+    public void decrementPinCount()
+    {
+      if(pinCount > 0)
+      {
+        pinCount--;
+      }
+    }
 
-	/**
-	* Get the pin count on this frame's page
-	*/
-  	public int getPinCount()
-  	{
-  		return pinCount;
-  	}
+  /**
+  * Get the pin count on this frame's page
+  */
+    public int getPinCount()
+    {
+      return pinCount;
+    }
 
-	/**
-	* Set refBit to true. Page recently referenced.
-	*/
-  	public void setRefBit()
-  	{
-  		refBit = true;
-  	}
+  /**
+  * Set refBit value
+  * @param ref True/False value to set ref bit to
+  */
+    public void setRefBit(boolean ref)
+    {
+      refBit = ref;
+    }
 
-	/**
-	* Set refBit to false
-	*/
-  	public void clearRefBit()
-  	{
-  		refBit = false;
-  	}
-
-	/**
-	* Get the refBit
-	*/
-  	public boolean getRefBit()
-  	{
-  		return refBit;
-  	}
+  /**
+  * Get the refBit
+  */
+    public boolean getRefBit()
+    {
+      return refBit;
+    }
 
 }
