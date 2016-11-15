@@ -29,7 +29,7 @@ public class BufMgr implements GlobalConst {
 
   protected FrameDesc[] frametable; //Describes info about a page.
   protected Page[] bufpool; // Array of pages
-  protected HashMap<PageId, Integer> pagemap; //Link between a disk page id and a frame
+  protected HashMap<Integer, Integer> pagemap; //Link between a disk page number and a frame
   private Replacer replacer; //Used to replace a page in the buffer pool
   
   /**
@@ -49,7 +49,7 @@ public class BufMgr implements GlobalConst {
       bufpool[x] = new Page();
     }
     
-    pagemap = new HashMap<PageId, Integer>();
+    pagemap = new HashMap<Integer, Integer>();
     replacer = new Clock(this);
 
   } // public BufMgr(int numframes)
@@ -84,7 +84,7 @@ public class BufMgr implements GlobalConst {
    */
   public void pinPage(PageId pageno, Page mempage, int contents) {
 
-      Integer frame_num = pagemap.get(pageno);
+      Integer frame_num = pagemap.get(pageno.pid);
       //frame exists
       if (null != frame_num) 
       {
@@ -100,43 +100,47 @@ public class BufMgr implements GlobalConst {
                           
         if (-1 != victim_no)
         {       
-          FrameDesc victim = frametable[victim_no];
-        if (victim != null && victim.isDirty()) 
-        {
-          PageId tempId = new PageId(victim.getDiskPageNum());
-          Minibase.DiskManager.write_page(tempId, bufpool[victim_no]);
-        }
-        if (contents == PIN_DISKIO)
-        {
-          Page new_page = new Page();
-          Minibase.DiskManager.read_page(pageno, new_page);
-          bufpool[victim_no].copyPage(new_page);
-          mempage.setPage(bufpool[victim_no]);
-          //Minibase.DiskManager.read_page(pageno,bufpool[victim_no]);
-          victim.incrementPinCount();  
-          victim.setValidDataIndicator(true); 
-          victim.setDiskPageNum(pageno.pid); 
-          pagemap.remove(victim);
-          pagemap.put(pageno, victim_no);
+            FrameDesc victim = frametable[victim_no];
+          if (victim != null && victim.isDirty()) 
+          {
+            PageId tempId = new PageId(victim.getDiskPageNum());
+            Minibase.DiskManager.write_page(tempId, bufpool[victim_no]);
+          }
+          if (contents == PIN_DISKIO)
+          {
+            pagemap.remove(victim.getDiskPageNum()); //remove victim from hashmap
+            Page new_page = new Page();
+            Minibase.DiskManager.read_page(pageno, new_page);
+            bufpool[victim_no].copyPage(new_page);
+            mempage.setPage(bufpool[victim_no]);
+            Minibase.DiskManager.read_page(pageno,bufpool[victim_no]);
+            victim.incrementPinCount();  
+            victim.setValidDataIndicator(true); 
+            victim.setDiskPageNum(pageno.pid);
+            pagemap.put(pageno.pid, victim_no);
+            
+          }
           
+          else if (contents == PIN_MEMCPY)
+          {
+            pagemap.remove(victim.getDiskPageNum()); //remove victim from hashmap
+            bufpool[victim_no].copyPage(mempage);
+            mempage.setPage(bufpool[victim_no]);
+            victim.incrementPinCount();  
+            victim.setValidDataIndicator(true); 
+            victim.setDiskPageNum(pageno.pid); 
+            pagemap.put(pageno.pid, victim_no);          
+          } 
+          else if (contents == PIN_NOOP)
+          {}
+          else
+          {
+            throw new IllegalArgumentException();
+          }
         }
-        
-        else if (contents == PIN_MEMCPY)
-        {
-          
-          bufpool[victim_no].copyPage(mempage);
-          mempage.setPage(bufpool[victim_no]);
-          victim.incrementPinCount();  
-          victim.setValidDataIndicator(true); 
-          victim.setDiskPageNum(pageno.pid); 
-          pagemap.put(pageno, victim_no);          
-        } 
-        else if (contents == PIN_NOOP)
-        {}
         else
         {
-          throw new IllegalArgumentException();
-        }
+          throw new IllegalStateException(); //Pool is full
         } 
       }
   } // public void pinPage(PageId pageno, Page page, int contents)
@@ -151,12 +155,12 @@ public class BufMgr implements GlobalConst {
    */
   public void unpinPage(PageId pageno, boolean dirty) throws IllegalArgumentException 
   {
-    if (!pagemap.containsKey(pageno))
+    if (!pagemap.containsKey(pageno.pid))
     {
       throw new IllegalArgumentException();
     }
     
-    Integer frame = pagemap.get(pageno);
+    Integer frame = pagemap.get(pageno.pid);
     if(frametable[frame].getPinCount() == 0)
     {
       throw new IllegalArgumentException();
@@ -194,7 +198,7 @@ public class BufMgr implements GlobalConst {
     {   
        PageId new_page =new PageId();
        new_page = Minibase.DiskManager.allocate_page(run_size);
-       Integer frame = pagemap.get(new_page);
+       Integer frame = pagemap.get(new_page.pid);
 
        if(null != frame && frametable[frame].getPinCount() > 0)
       {
@@ -218,7 +222,7 @@ public class BufMgr implements GlobalConst {
    */
   public void freePage(PageId pageno) {
 
-    Integer frame = pagemap.get(pageno);
+    Integer frame = pagemap.get(pageno.pid);
 
     if(null != frame && frametable[frame].getPinCount() > 0)
     {
@@ -248,7 +252,9 @@ public class BufMgr implements GlobalConst {
       // Iterate through HashMap entries(Key-Value pairs)
       while(it.hasNext()){
          Map.Entry me = (Map.Entry)it.next();
-         flushPage((PageId) me.getKey());
+         Integer idValue = (Integer)me.getKey();
+         PageId idToFlush = new PageId(idValue);
+         flushPage(idToFlush);
 
      }
   } // public void flushAllFrames()
@@ -271,7 +277,7 @@ public class BufMgr implements GlobalConst {
    */
   public void flushPage(PageId pageno) 
   {
-      Integer frame = pagemap.get(pageno);
+      Integer frame = pagemap.get(pageno.pid);
       
       if(null != frame)
       {
