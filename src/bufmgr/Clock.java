@@ -1,14 +1,26 @@
 package bufmgr;
 
 
-
+/**
+ * <h3>Clock</h3>
+ * The clock class contains the clock replacement algorithm.
+ * This is a subtype of a Replacer and can be used to find a victim
+ * frame to replace.
+ * <ol>
+ * <li>Contains clock algorithm processing
+ * </ol>
+ * The clock can be used as a Replacer object
+ */
 public class Clock extends Replacer {
 
   private int current; //current frame the clock is pointing to
 
 
+  /**
+   * Constructor for Clock class
+   */
   public Clock(BufMgr bufmgr) {
-  	super(bufmgr);
+    super(bufmgr);
     current = 0;
   }
 
@@ -63,7 +75,7 @@ public class Clock extends Replacer {
       current = (current + 1) % frametable.length;
 
     }
-  	
+    
     //If you looped through twice and couldn't find an available frame, return error num
     return -1;
   }

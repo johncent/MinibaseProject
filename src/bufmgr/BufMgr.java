@@ -37,7 +37,7 @@ public class BufMgr implements GlobalConst {
    * 
    * @param numframes number of frames in the buffer pool
    */
-  public BufMgr(int numframes) {
+  public BufMgr(int numframes, String replacement_policy) {
 
     frametable = new FrameDesc[numframes];
     bufpool = new Page[numframes];    
@@ -50,7 +50,9 @@ public class BufMgr implements GlobalConst {
     }
     
     pagemap = new HashMap<Integer, Integer>();
-    replacer = new Clock(this);
+
+    if(replacement_policy.equals("Clock"))
+      replacer = new Clock(this);
 
   } // public BufMgr(int numframes)
 
