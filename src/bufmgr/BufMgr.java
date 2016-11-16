@@ -91,6 +91,7 @@ public class BufMgr implements GlobalConst {
         // page is already loaded
         FrameDesc frame = frametable[frame_num];
         frame.incrementPinCount();
+        mempage.setPage(bufpool[frame_num]); //output buffer page 
       } 
   
       else
